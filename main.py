@@ -1,7 +1,13 @@
+import os
 import requests
+from dotenv import load_dotenv
+
+load_dotenv()
 
 OMW_endpoint = "https://api.openweathermap.org/data/2.5/forecast"
-api_key = "2fa08b339a68ba3d2c0181e03b503771"
+api_key = os.getenv("API_KEY")
+
+condition_list = []
 
 parameters = {
     "lat": 9.915488,
@@ -13,7 +19,14 @@ parameters = {
 response = requests.get(OMW_endpoint, params=parameters)
 response.raise_for_status()
 data = response.json()
-print(data)
+
+for i in range(0, parameters["cnt"]):
+    condition = data["list"][i]["weather"][0]["id"]
+    condition_list.append(condition)
+
+for condition in condition_list:
+    if condition < 700:
+        print("Hoy hay que llevar sombrilla.")
 
 
 
