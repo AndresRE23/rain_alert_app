@@ -1,11 +1,14 @@
 import os
 import requests
 from dotenv import load_dotenv
+import smtplib
 
 load_dotenv()
 
 OMW_endpoint = "https://api.openweathermap.org/data/2.5/forecast"
 api_key = os.getenv("API_KEY")
+my_email = "andresre2311@gmail.com"
+password = "lztaajelqrvhdkmj"
 
 parameters = {
     "lat": 9.915488,
@@ -22,11 +25,15 @@ will_rain = False
 
 for hour_data in data["list"]:
     condition_code = hour_data["weather"][0]["id"]
-    if int(condition_code) < 700:
+    if 200 <= condition_code < 600:
         will_rain = True
+        break
 
 if will_rain:
-    print("Hoy probablemente va a llover.")
+    with smtplib.SMTP(host="smtp.gmail.com", port=587) as cn:
+        cn.starttls()
+        cn.login(my_email, password)
+        cn.sendmail(my_email, my_email, msg="Subject:️Hoy podría llover 🌧️\n\nHola,\n\nSegún el pronóstico, hoy hay probabilidad de lluvia. ☂️".encode("utf-8"))
 
 
 
